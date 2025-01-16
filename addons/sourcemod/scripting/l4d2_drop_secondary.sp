@@ -2,7 +2,6 @@
 #pragma newdecls required
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
 
 char sSecondary[MAXPLAYERS + 1][64];
 char sMeleeScript[MAXPLAYERS + 1][64];

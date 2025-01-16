@@ -1,6 +1,7 @@
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#include <left4framework>
 
 #define L4D2_TEAM_SPECTATOR 1
 #define L4D2_TEAM_SURVIVOR 2

@@ -2,7 +2,9 @@
 #pragma newdecls required
 
 #include <sourcemod>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
+#include <sdkhooks>
 
 #define PLUGIN_VERSION "2.0.1"
 
@@ -37,7 +39,7 @@ void LateLoad()
 {
 	for (int i = 1; i <= MaxClients; ++i)
 	{
-		if (IsClientInGame(i) && GetClientTeam(i) == 3 && L4D_IsPlayerGhost(i))
+		if (IsClientInGame(i) && GetClientTeam(i) == 3 && GetEntProp(i, Prop_Send, "m_isGhost", 1) > 0)
 			L4D_OnEnterGhostState(i);
 	}
 }
@@ -60,7 +62,7 @@ void SDK_OnPreThink_Post(int client)
 	if (!IsClientInGame(client))
 		return;
 	
-	if (!L4D_IsPlayerGhost(client))
+	if (GetEntProp(client, Prop_Send, "m_isGhost", 1) < 1)
 	{
 		SDKUnhook(client, SDKHook_PreThinkPost, SDK_OnPreThink_Post);
 	}

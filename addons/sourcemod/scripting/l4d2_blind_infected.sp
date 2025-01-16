@@ -76,7 +76,6 @@ public void OnPluginStart()
 
 Action Timer_EntCheck(Handle hTimer)
 {
-	char sTmp[PLATFORM_MAX_PATH];
 	int iCurrentEnt[eArray_Size], iEntity, iSize = g_hBlockedEntities.Length;
 	
 	for (int i = 0; i < iSize; i++) {
@@ -84,9 +83,8 @@ Action Timer_EntCheck(Handle hTimer)
 		iEntity = EntRefToEntIndex(iCurrentEnt[eiEntRef]);
 		
 		if (iEntity != INVALID_ENT_REFERENCE && !iCurrentEnt[ebHasBeenSeen] && IsVisibleToSurvivors(iEntity)) {
-			GetEntPropString(iEntity, Prop_Data, "m_ModelName", sTmp, sizeof(sTmp));
 			iCurrentEnt[ebHasBeenSeen] = true;
-			
+
 			g_hBlockedEntities.SetArray(i, iCurrentEnt[0], sizeof(iCurrentEnt));
 		}
 	}

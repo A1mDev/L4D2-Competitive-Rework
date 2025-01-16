@@ -46,7 +46,9 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#define L4D2_DIRECT_INCLUDE 1
+#include <left4framework>
 #include <l4d2util_constants>
 #undef REQUIRE_PLUGIN
 #include <godframecontrol>
@@ -415,7 +417,7 @@ void Event_ChargerKilled(Event event, const char[] name, bool dontBroadcast)
 		int attacker = GetClientOfUserId(event.GetInt("attacker"));
 		if (attacker && victim == attacker)
 		{
-			if (!L4D_IsPlayerIncapacitated(victim))
+			if (GetEntProp(victim, Prop_Send, "m_isIncapacitated", 1) < 1)
 			{
 				// No self-clear get-up
 				pAnim.SetFlag(AnimState_GroundSlammed, false);
@@ -574,7 +576,7 @@ void ProcessAttackedByTank(int victim)
 
 public void L4D_TankClaw_OnPlayerHit_Post(int tank, int claw, int player)
 {
-	if (GetClientTeam(player) == 2 && !L4D_IsPlayerIncapacitated(player))
+	if (GetClientTeam(player) == 2 && GetEntProp(player, Prop_Send, "m_isIncapacitated", 1) < 1)
 	{
 		ProcessAttackedByTank(player);
 	}

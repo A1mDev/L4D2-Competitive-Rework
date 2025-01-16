@@ -2,7 +2,8 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #undef REQUIRE_PLUGIN
 #include <l4d2lib>
 #define REQUIRE_PLUGIN

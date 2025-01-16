@@ -3,7 +3,8 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define PLUGIN_VERSION "1.1.3"
 

@@ -5,7 +5,8 @@
 #include <sdkhooks>
 #include <sdktools_gamerules>
 #include <dhooks>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define PLUGIN_VERSION "2.5.1"
 
@@ -22,9 +23,9 @@ ConVar g_cvAllow;
 
 public void OnPluginStart()
 {
-	GameData gd = new GameData("left4dhooks.l4d2");
+	GameData gd = new GameData(LEFT4FRAMEWORK_GAMEDATA);
 	if (!gd)
-		SetFailState("Missing gamedata \"left4dhooks.l4d2\"");
+		SetFailState("Missing gamedata \"" ... LEFT4FRAMEWORK_GAMEDATA ... "\"");
 
 	DynamicDetour hDetour = new DynamicDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Ignore);
 	if (!hDetour.SetFromConf(gd, SDKConf_Signature, "CDirector::SwapTeams"))

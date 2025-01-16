@@ -30,7 +30,8 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <colors>
 #undef REQUIRE_PLUGIN
 #include <l4d2_changelevel>

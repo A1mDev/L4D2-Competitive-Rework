@@ -3,7 +3,8 @@
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <colors>
 
 #define TEAM_SPECTATOR          1 
@@ -897,7 +898,7 @@ void PlayerHurt_Event(Handle:event, const String:name[], bool:dontBroadcast)
         }
         
         // Otherwise if friendly fire
-        else if (GetClientTeam(attacker) == TEAM_SURVIVOR && GetClientTeam(victim) == TEAM_SURVIVOR && bTrackFF && !L4D_IsPlayerIncapacitated(victim))                // survivor on survivor action == FF
+        else if (GetClientTeam(attacker) == TEAM_SURVIVOR && GetClientTeam(victim) == TEAM_SURVIVOR && bTrackFF && GetEntProp(victim, Prop_Send, "m_isIncapacitated", 1) < 1)                // survivor on survivor action == FF
         {
             if (bRUPLive || bPlayerLeftStartArea) {
                 // but don't record before readyup ended or before leaving saferoom if readyup is not loaded.

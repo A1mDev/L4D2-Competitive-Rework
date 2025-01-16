@@ -3,12 +3,22 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <colors>
 
 #define ZC_TANK	 8
 
 #define GAMEDATA "l4d2_si_ability"
+
+stock const char L4D2_AttackerNetProps[][] =
+{
+	"m_tongueOwner",	// Smoker
+	"m_pounceAttacker",	// Hunter
+	"m_jockeyAttacker",	// Jockey
+	"m_carryAttacker",	// Charger carry
+	"m_pummelAttacker",	// Charger pummel
+};
 
 public Plugin myinfo =
 {
@@ -170,8 +180,10 @@ Action Spectate_Cmd(int client, int args)
 			return Plugin_Handled;
 		}
 
-		if ((L4D2_GetInfectedAttacker(client) != -1 && !L4D_IsPlayerIncapacitated(client)) || GetPummelQueueAttacker(client) != -1)
-		{
+		if ((IsSurvivorAttacked(client)
+			&& (GetEntProp(client, Prop_Send, "m_isIncapacitated", 1) < 1))
+			|| GetPummelQueueAttacker(client) != -1
+		) {
 			CPrintToChat(client, "%t %t", "Tag", "WhileCapped");
 			return Plugin_Handled;
 		}
@@ -551,6 +563,17 @@ void OnFrame_KickBot(int userid)
 {
 	int client = GetClientOfUserId(userid);
 	if (client > 0) KickClient(client);
+}
+
+bool IsSurvivorAttacked(int client)
+{
+	for (int i = 0; i < sizeof(L4D2_AttackerNetProps); i++) {
+		if (GetEntPropEnt(client, Prop_Send, L4D2_AttackerNetProps[i]) != -1) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 stock int GetPummelQueueAttacker(int client)

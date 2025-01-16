@@ -4,7 +4,7 @@
 #include <sourcemod>
 #include <sourcescramble>
 #include <collisionhook>
-#include <left4dhooks>
+#include <sdktools>
 
 #define PLUGIN_VERSION "1.2.2"
 
@@ -94,7 +94,7 @@ public Action CH_PassFilter(int touch, int pass, bool &result)
 		static int m_vSwingPosition = -1;
 		if (m_vSwingPosition == -1)
 			m_vSwingPosition = FindSendPropInfo("CTankClaw", "m_lowAttackDurationTimer") + 32;
-		
+
 		static float vPos[3], vSwingPos[3], vEntPos[3];
 		GetClientEyePosition(pass, vPos);
 		GetAbsOrigin(touch, vEntPos, true);
@@ -117,4 +117,32 @@ void PatchNearJump(int instruction, Address src, Address dest)
 {
 	StoreToAddress(src, instruction, NumberType_Int8);
 	StoreToAddress(src + view_as<Address>(1), view_as<int>(dest - src) - 5, NumberType_Int32);
+}
+
+/**
+ * Get an entity's world space origin.
+ * Note: Not all entities may support "CollisionProperty" for getting the center.
+ * (https://github.com/LuxLuma/l4d2_structs/blob/master/collision_property.h)
+ *
+ * @param iEntity 		Entity index to get origin of.
+ * @param vecOrigin		Vector to store origin in.
+ * @param bCenter		True to get world space center, false otherwise.
+ *
+ * @error			Invalid entity index.
+ **/
+void GetAbsOrigin(int iEntity, float vecOrigin[3], bool bCenter=false)
+{
+	GetEntPropVector(iEntity, Prop_Data, "m_vecAbsOrigin", vecOrigin);
+
+	if(bCenter)
+	{
+		float vecMins[3];
+		float vecMaxs[3];
+		GetEntPropVector(iEntity, Prop_Send, "m_vecMins", vecMins);
+		GetEntPropVector(iEntity, Prop_Send, "m_vecMaxs", vecMaxs);
+
+		vecOrigin[0] += (vecMins[0] + vecMaxs[0]) * 0.5;
+		vecOrigin[1] += (vecMins[1] + vecMaxs[1]) * 0.5;
+		vecOrigin[2] += (vecMins[2] + vecMaxs[2]) * 0.5;
+	}
 }

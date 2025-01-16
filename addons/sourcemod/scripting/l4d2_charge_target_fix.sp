@@ -3,7 +3,8 @@
 
 #include <sourcemod>
 #include <dhooks>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define PLUGIN_VERSION "1.10"
 
@@ -502,8 +503,8 @@ Action Timer_KnockdownRepeat(Handle timer, int userid)
 	
 	if (GetClientTeam(client) != 2)
 		return Plugin_Stop;
-	
-	if (!IsPlayerAlive(client) || L4D_IsPlayerIncapacitated(client))
+
+	if (!IsPlayerAlive(client) || GetEntProp(client, Prop_Send, "m_isIncapacitated", 1) > 0)
 		return Plugin_Stop;
 	
 	int queuedPummelAttacker = L4D2_GetQueuedPummelAttacker(client);

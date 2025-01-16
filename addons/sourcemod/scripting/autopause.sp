@@ -22,12 +22,16 @@
 #pragma newdecls required
 
 #include <sourcemod>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#include <left4framework>
 #include <colors>
 
 #undef REQUIRE_PLUGIN
 #include <readyup>
 #include <pause>
+
+#define L4D_TEAM_SURVIVOR 2
+#define L4D_TEAM_INFECTED 3
 
 #define DEBUG_SM   1
 #define DEBUG_CHAT 2

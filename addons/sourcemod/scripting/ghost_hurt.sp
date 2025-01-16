@@ -3,6 +3,8 @@
 
 #include <sourcemod>
 #include <sdktools>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #undef REQUIRE_PLUGIN
 #include <readyup>
 
@@ -98,7 +100,7 @@ void ModifyEntity(const char[] sClassName, const char[] sInputName)
 	int iEntity = -1;
 
 	while ((iEntity = FindEntityByClassname(iEntity, sClassName)) != -1) {
-		if (!IsValidEdict(iEntity) || !IsValidEntity(iEntity)) {
+		if (!IsValidEntity(iEntity)) {
 			continue;
 		}
 

@@ -22,10 +22,16 @@
 #include <sourcemod>
 
 #undef REQUIRE_PLUGIN
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #define REQUIRE_PLUGIN 
 
 #define CALL_OPCODE 0xE8
+
+#define L4DTeam_Survivor 2
+#define L4DTeam_Infected 3
+
+#define L4D2ZombieClass_Tank 8
 
 // xor eax,eax; NOP_3;
 int
@@ -134,7 +140,7 @@ void Event_EnteredStartArea(Event hEvent, const char[] sName, bool dontBroadcast
 		return;
 		
 	int client = GetClientOfUserId(hEvent.GetInt("userid"));
-	if (!IsValidClientIndex(client) || !IsClientInGame(client) || IsFakeClient(client) || L4D_GetClientTeam(client) != L4DTeam_Survivor)
+	if (!IsValidClientIndex(client) || !IsClientInGame(client) || IsFakeClient(client) || GetClientTeam(client) != L4DTeam_Survivor)
 		return;
 
 	if (g_bPlayerJoin[client])
@@ -171,7 +177,7 @@ public void Event_PlayerTeam(Event hEvent, const char[] sEventName, bool bDontBr
 	if (!IsClientInGame(client) || IsFakeClient(client))
 		return;
 
-	L4DTeam Team = view_as<L4DTeam>(GetEventInt(hEvent, "team"));
+	int Team = GetEventInt(hEvent, "team");
 
 	if (Team != L4DTeam_Survivor)
 		return;
@@ -310,7 +316,7 @@ bool IsValidClientIndex(int client)
  */
 bool IsTank(int client)
 {
-	return (L4D_GetClientTeam(client) == L4DTeam_Infected && L4D2_GetPlayerZombieClass(client) == L4D2ZombieClass_Tank);
+	return (GetClientTeam(client) == L4DTeam_Infected && GetEntProp(client, Prop_Send, "m_zombieClass") == L4D2ZombieClass_Tank);
 }
 
 /**

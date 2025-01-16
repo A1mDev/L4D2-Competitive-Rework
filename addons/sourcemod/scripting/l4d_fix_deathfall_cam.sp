@@ -3,7 +3,8 @@
 
 #include <sourcemod>
 #include <sdktools_engine>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define PLUGIN_VERSION "1.6"
 
@@ -124,10 +125,12 @@ void SetViewEntity(int client, int view)
 #define HIDEHUD_VEHICLE_CROSSHAIR   (1 << 9)	// Hide vehicle crosshair
 #define HIDEHUD_INVEHICLE           (1 << 10)
 #define HIDEHUD_BONUS_PROGRESS      (1 << 11)	// Hide bonus progress display (for bonus map challenges)
-stock void ReleaseFromViewControl(int userid = 0, int client = 0)
+void ReleaseFromViewControl(int userid = 0, int client = 0)
 {
 	if (userid) client = GetClientOfUserId(userid);
-	if (!client) return;
+	if (client < 1) {
+		return;
+	}
 	
 	SetEntityFlags(client, GetEntityFlags(client) & ~FL_FROZEN);
 	SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1, 1);

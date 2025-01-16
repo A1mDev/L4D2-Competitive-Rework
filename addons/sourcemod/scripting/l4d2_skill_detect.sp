@@ -56,12 +56,18 @@
 #pragma newdecls required
 
 #include <colors>
-#include <left4dhooks>
+
+#define L4D2_DIRECT_INCLUDE 1
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <sdkhooks>
 #include <sdktools>
 #include <sourcemod>
 
 #define PLUGIN_VERSION		 "1.1.1"
+
+#define L4DTeam_Survivor	 2
+#define L4DTeam_Infected	 3
 
 #define SHOTGUN_BLAST_TIME	 0.1
 #define POUNCE_CHECK_TIME	 0.1
@@ -714,7 +720,7 @@ stock bool IsValidClientInGame(int client)
  */
 stock bool IsSurvivor(int client)
 {
-	return (L4D_GetClientTeam(client) == L4DTeam_Survivor);
+	return (GetClientTeam(client) == L4DTeam_Survivor);
 }
 
 /**
@@ -725,7 +731,7 @@ stock bool IsSurvivor(int client)
  */
 stock bool IsInfected(int client)
 {
-	return (L4D_GetClientTeam(client) == L4DTeam_Infected);
+	return (GetClientTeam(client) == L4DTeam_Infected);
 }
 
 /**
