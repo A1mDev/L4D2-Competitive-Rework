@@ -2,8 +2,8 @@
 #pragma newdecls required
 
 #include <sourcemod>
-#include <left4dhooks>
 #include <actions>
+#include <sdktools>
 #include <colors>
 
 bool g_bExtensionActions;

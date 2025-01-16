@@ -2,7 +2,8 @@
 #pragma newdecls required
 
 #include <colors>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <sourcemod>
 #define L4D2UTIL_STOCKS_ONLY 1
 #include <l4d2util>

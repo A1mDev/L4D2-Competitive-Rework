@@ -17,7 +17,8 @@ out what's going on :D Kinda makes my other plugins look bad huh :/
 #pragma newdecls required
 
 #include <colors>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#include <left4framework>
 #include <sourcemod>
 #define L4D2UTIL_STOCKS_ONLY
 #include <l4d2util_rounds>

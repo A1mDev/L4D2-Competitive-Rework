@@ -31,7 +31,8 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks> // For checking respawns.
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define TEAM_INFECTED			3
 #define ZC_JOCKEY				5

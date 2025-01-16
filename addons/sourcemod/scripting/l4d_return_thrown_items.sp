@@ -4,7 +4,8 @@
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools_functions>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define PLUGIN_VERSION "1.0"
 

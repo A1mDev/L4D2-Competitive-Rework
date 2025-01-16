@@ -4,7 +4,8 @@
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools>
-#include <left4dhooks> //#include <l4d2_direct>
+#define L4D2_DIRECT_INCLUDE 1
+#include <left4framework> //#include <l4d2_direct>
 #define L4D2UTIL_STOCKS_ONLY 1
 #include <l4d2util>
 
@@ -34,7 +35,7 @@ public Plugin myinfo =
 	name = "L4D2 Ultra Witch",
 	author = "Visor, A1m`",
 	description = "The Witch's hit deals a set amount of damage instead of instantly incapping, while also sending the survivor flying. Fixes convar z_witch_damage",
-	version = "1.2.2",
+	version = "1.2.3",
 	url = "https://github.com/SirPlease/L4D2-Competitive-Rework"
 };
 
@@ -139,7 +140,7 @@ int iGetSurvivorPermanentHealth(int iClient)
 
 bool IsWitch(int iEntity)
 {
-	if (iEntity < 1 || !IsValidEdict(iEntity)) {
+	if (iEntity <= MaxClients || !IsValidEdict(iEntity)) {
 		return false;
 	}
 	

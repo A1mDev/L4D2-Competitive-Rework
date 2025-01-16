@@ -1,5 +1,7 @@
 #include <sourcemod>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <colors>
 #undef REQUIRE_PLUGIN
 #include <l4d2_boss_percents>
@@ -138,7 +140,7 @@ Action timerTank(Handle timer)
                 fTimeToAdd += convarRageFreezeTime.FloatValue;
             }
 
-            int tankFrustration = 100 - L4D_GetTankFrustration(iTank);
+            int tankFrustration = 100 - GetEntProp(iTank, Prop_Send, "m_frustration");
             float fTankGrace = CTimer_GetRemainingTime(GetFrustrationTimer(iTank));
 
             if (fTankGrace < 0.0) fTankGrace = 0.0;

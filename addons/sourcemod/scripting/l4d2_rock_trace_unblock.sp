@@ -3,7 +3,9 @@
 
 #include <sourcemod>
 #include <sdkhooks>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <dhooks>
 #include <sourcescramble>
 
@@ -171,7 +173,10 @@ Action SDK_OnThink(int entity)
 		if (!IsClientInGame(i) || GetClientTeam(i) != 2 || !IsPlayerAlive(i))
 			continue;
 		
-		if (L4D_IsPlayerIncapacitated(i) || L4D_IsPlayerHangingFromLedge(i))
+		if (GetEntProp(i, Prop_Send, "m_isIncapacitated", 1) > 0)
+			continue;
+		
+		if (GetEntProp(i, Prop_Send, "m_isHangingFromLedge", 1) > 0)
 			continue;
 		
 		L4D_GetEntityWorldSpaceCenter(i, vPos);
@@ -358,7 +363,7 @@ MRESReturn DHook_OnBounceTouch_Post(int pThis, DHookReturn hReturn, DHookParam h
 	
 	if( client > 0 && client <= MaxClients
 		&& GetClientTeam(client) == 2
-		&& !L4D_IsPlayerIncapacitated(client) )
+		&& GetEntProp(client, Prop_Send, "m_isIncapacitated", 1) < 1 )
 	{
 		int jockey = GetEntPropEnt(client, Prop_Send, "m_jockeyAttacker");
 		if (jockey != -1)

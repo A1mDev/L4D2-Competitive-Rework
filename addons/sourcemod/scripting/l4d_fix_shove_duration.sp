@@ -3,7 +3,9 @@
 
 #include <sourcemod>
 #include <dhooks>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 #define PLUGIN_VERSION "1.0"
 

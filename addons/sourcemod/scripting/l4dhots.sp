@@ -2,38 +2,27 @@
 #pragma newdecls required
 
 #include <sourcemod>
-#include <left4dhooks>
-
-#define PLUGIN_VERSION "2.4"
-
-public Plugin myinfo = 
-{
-    name = "L4D HOTs",
-    author = "ProdigySim, CircleSquared, Forgetest",
-    description = "Pills and Adrenaline heal over time",
-    version = PLUGIN_VERSION,
-    url = "https://github.com/SirPlease/L4D2-Competitive-Rework"
-}
 
 ArrayList
-	g_aHOTPair;
+	g_aHOTPair = null;
 
 bool
-	g_bLeft4Dead2;
+	g_bLeft4Dead2 = false;
 
 ConVar
-	hCvarPillHot,
-	hCvarPillInterval,
-	hCvarPillIncrement,
-	hCvarPillTotal,
-	pain_pills_health_value;
+	g_hCvar_PillsDecay = null,
+	hCvarPillHot = null,
+	hCvarPillInterval = null,
+	hCvarPillIncrement = null,
+	hCvarPillTotal = null,
+	pain_pills_health_value = null;
 
 ConVar
-	hCvarAdrenHot,
-	hCvarAdrenInterval,
-	hCvarAdrenIncrement,
-	hCvarAdrenTotal,
-	adrenaline_health_buffer;
+	hCvarAdrenHot = null,
+	hCvarAdrenInterval = null,
+	hCvarAdrenIncrement = null,
+	hCvarAdrenTotal = null,
+	adrenaline_health_buffer = null;
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -48,6 +37,15 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 	return APLRes_Success;
 }
+
+public Plugin myinfo = 
+{
+    name = "L4D HOTs",
+    author = "ProdigySim, CircleSquared, Forgetest",
+    description = "Pills and Adrenaline heal over time",
+    version = "2.4",
+    url = "https://github.com/SirPlease/L4D2-Competitive-Rework"
+};
 
 public void OnPluginStart()
 {
@@ -78,6 +76,8 @@ public void OnPluginStart()
 	
 	if (hCvarAdrenHot.BoolValue) EnableAdrenHot();
 	hCvarAdrenHot.AddChangeHook(AdrenHotChanged);
+	
+	g_hCvar_PillsDecay = FindConVar("pain_pills_decay_rate");
 }
 
 public void OnPluginEnd()
@@ -142,7 +142,7 @@ void AdrenalineUsed_Event(Event event, const char[] name, bool dontBroadcast)
 void HealEntityOverTime(int userid, float interval, int increment, int total)
 {
 	int client = GetClientOfUserId(userid);
-	if (!client || !IsClientInGame(client) || !IsPlayerAlive(client))
+	if (client < 1 || !IsClientInGame(client) || !IsPlayerAlive(client))
 		return;
 	
 	int iMaxHP = GetEntProp(client, Prop_Send, "m_iMaxHealth", 2);
@@ -173,7 +173,7 @@ Action __HOT_ACTION(Handle timer, DataPack pack)
 	int userid = pack.ReadCell();
 	int client = GetClientOfUserId(userid);
 	
-	if (client && IsPlayerAlive(client) && !L4D_IsPlayerIncapacitated(client) && !L4D_IsPlayerHangingFromLedge(client))
+	if (client > 1 && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_isIncapacitated", 1) < 1 && GetEntProp(client, Prop_Send, "m_isHangingFromLedge", 1) < 1)
 	{
 		int increment = pack.ReadCell();
 		DataPackPos pos = pack.Position;
@@ -202,13 +202,15 @@ Action __HOT_ACTION(Handle timer, DataPack pack)
 
 void __HealTowardsMax(int client, int amount, int max)
 {
-	float hb = L4D_GetTempHealth(client) + amount;
+	float hb = GetTempHealth(client) + amount;
 	float overflow = hb + GetClientHealth(client) - max;
 	if (overflow > 0)
 	{
 		hb -= overflow;
 	}
-	L4D_SetTempHealth(client, hb);
+
+	SetEntPropFloat(client, Prop_Send, "m_healthBuffer", (hb < 0.0) ? 0.0 : hb);
+	SetEntPropFloat(client, Prop_Send, "m_healthBufferTime", GetGameTime());
 }
 
 
@@ -329,4 +331,14 @@ void SwitchGeneralEventHooks(bool hook)
 		
 		hooked = false;
 	}
+}
+
+float GetTempHealth(int client)
+{
+	float fGameTime = GetGameTime();
+	float fHealthTime = GetEntPropFloat(client, Prop_Send, "m_healthBufferTime");
+	float fHealth = GetEntPropFloat(client, Prop_Send, "m_healthBuffer");
+	fHealth -= (fGameTime - fHealthTime) * g_hCvar_PillsDecay.FloatValue;
+
+	return (fHealth < 0.0) ? 0.0 : fHealth;
 }

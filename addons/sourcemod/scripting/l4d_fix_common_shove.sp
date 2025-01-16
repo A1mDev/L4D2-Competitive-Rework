@@ -4,7 +4,8 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#include <left4dhooks_anim>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <actions>
 
 #define PLUGIN_VERSION "1.4.1"
@@ -26,6 +27,8 @@ Handle g_hCall_GetLocomotionInterface;
 Handle g_hCall_SetDesiredPosture;
 
 int g_iOffs_ZombieBotLocomotion__m_ladder;
+
+static EngineVersion g_iEngine;
 
 enum ActivityType 
 { 
@@ -105,6 +108,7 @@ enum PendingShoveState
 
 public void OnPluginStart()
 {
+	g_iEngine = GetEngineVersion();
 	GameData gd = new GameData(GAMEDATA_FILE);
 	if (!gd)
 		SetFailState("Missing gamedata \""...GAMEDATA_FILE..."\"");
@@ -249,7 +253,7 @@ bool ForceActivityInterruptible(int infected)
 {
 	ZombieBotBody body = MyNextBotPointer(infected).GetBodyInterface();
 	
-	if (L4D_IsEngineLeft4Dead1()) // perhaps unnecessary
+	if (g_iEngine == Engine_Left4Dead) // perhaps unnecessary
 	{
 		switch (body.m_activity)
 		{

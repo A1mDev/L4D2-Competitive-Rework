@@ -4,7 +4,8 @@
 #include <sourcemod>
 #define L4D2UTIL_STOCKS_ONLY 1
 #include <l4d2util>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 
 // The z_gun_swing_vs_amt_penalty cvar is the amount of cooldown time you get
 // when you are on your maximum m2 penalty. However, whilst testing I found that
@@ -136,7 +137,7 @@ public Action L4D_OnCancelStagger(int client)
 
 public void L4D_OnCancelStagger_Post(int client)
 {
-	if (IsInfected(client) && IsPlayerAlive(client) && !L4D_IsPlayerGhost(client))
+	if (IsInfected(client) && IsPlayerAlive(client) && GetEntProp(client, Prop_Send, "m_isGhost", 1) < 1)
 	{
 		float recharge = -1.0;
 		bool bAttacking = false;

@@ -329,7 +329,8 @@ Action Timer_ClearMap(Handle hTimer)
 	return Plugin_Stop;
 }
 
-Action Timer_GiveWeapons(Handle hTimer) {
+Action Timer_GiveWeapons(Handle hTimer)
+{
 	GiveSurvivorsWeapons();
 	return Plugin_Stop;
 }

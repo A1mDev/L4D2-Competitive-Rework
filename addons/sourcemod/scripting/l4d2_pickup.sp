@@ -35,6 +35,8 @@
 #include <l4d2util> //#include <weapons>
 #include <colors>
 
+#define MAX_ENTITY_NAME_SIZE              64
+
 #define FLAGS_SWITCH_MELEE                1
 #define FLAGS_SWITCH_PILLS                2
 
@@ -353,15 +355,15 @@ bool IsPlayerTank(int client)
 	return (IsValidClient(client) && GetEntProp(client, Prop_Send, "m_zombieClass") == 8);
 }
 
-bool IsTankRock(int entity)
+bool IsTankRock(int iEntity)
 {
-	if (entity > 0 && IsValidEntity(entity) && IsValidEdict(entity)) {
-		char classname[64];
-		GetEdictClassname(entity, classname, sizeof(classname));
-		return (strcmp(classname, "tank_rock") == 0);
+	if (iEntity <= MaxClients || !IsValidEdict(iEntity)) {
+		return false;
 	}
 
-	return false;
+	char sClassName[MAX_ENTITY_NAME_SIZE];
+	GetEdictClassname(iEntity, sClassName, sizeof(sClassName));
+	return (strcmp(sClassName, "tank_rock") == 0);
 }
 
 void KillActiveTimers(int client)

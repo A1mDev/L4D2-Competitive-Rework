@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #include <colors>
-#include <left4dhooks>
 #include <sdkhooks>
 #include <sdktools>
 #include <sourcemod>

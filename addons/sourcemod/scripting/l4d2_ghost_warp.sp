@@ -4,7 +4,9 @@
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools>
-#include <left4dhooks>
+#define L4D2_DIRECT_INCLUDE 1
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <l4d2util_constants>
 
 #define PLUGIN_TAG					"[GhostWarp]"

@@ -24,7 +24,8 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <left4dhooks>
+#define LEFT4FRAMEWORK_INCLUDE 1
+#include <left4framework>
 #include <l4d2util_stocks>
 
 #define SURVIVOR_RUNSPEED 220.0
@@ -54,7 +55,8 @@ ConVar
 	hCvarSurvivorLimpspeed,
 	hCvarTankSpeedVS,
 	hCvarCrouchSpeedMod,
-	hCvarJockeyMinMoundedSpeed;
+	hCvarJockeyMinMoundedSpeed,
+	g_hCvar_PillsDecay;
 
 int
 	iSurvLimpHealth;
@@ -120,6 +122,8 @@ public void OnPluginStart()
 	HookEvent("round_start", RoundStart, EventHookMode_PostNoCopy);
 	HookEvent("player_hurt", PlayerHurt);
 	HookEvent("player_death", TankDeath);
+
+	g_hCvar_PillsDecay = FindConVar("pain_pills_decay_rate");
 }
 
 public void OnConfigsExecuted()
@@ -500,4 +504,13 @@ float fScaleFloat2(float inc, float low, float high)
 	* #define SCALE2(%0,%1,%2) SCALE(%0*%0, %1*%1, %2*%2)
 	*/
 	return fScaleFloat((inc * inc), (low * low), (high * high));
+}
+
+float L4D_GetTempHealth(int client)
+{
+	float fGameTime = GetGameTime();
+	float fHealthTime = GetEntPropFloat(client, Prop_Send, "m_healthBufferTime");
+	float fHealth = GetEntPropFloat(client, Prop_Send, "m_healthBuffer");
+	fHealth -= (fGameTime - fHealthTime) * g_hCvar_PillsDecay.FloatValue;
+	return fHealth < 0.0 ? 0.0 : fHealth;
 }
